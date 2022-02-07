@@ -1,0 +1,177 @@
+﻿<!--主界面-->
+<Window x:Class="CamShar.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CamShar"
+        mc:Ignorable="d"
+        Title="CamShar" Height="600" Width="980"
+        FontFamily="Microsoft YaHei" Background="Transparent" WindowStyle="None" AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen" x:Name="MainWindowss">
+    <Window.Resources>
+        <ControlTemplate x:Key="ListBoxItemControlTemplate1" TargetType="{x:Type ListBoxItem}">
+            <Border x:Name="Bd"  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" ContentStringFormat="{TemplateBinding ContentStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsMouseOver" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" TargetName="Bd" Value="#fcfaf9"/>
+                    <!--<Setter Property="BorderBrush" TargetName="Bd" Value="#44d375"/>-->
+                </MultiTrigger>
+                <!--<MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        --><!--<Condition Property="Selector.IsSelectionActive" Value="False"/>--><!--
+                        <Condition Property="IsSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" TargetName="Bd" Value="#3DDADADA"/>
+                    <Setter Property="BorderBrush" TargetName="Bd" Value="#FFDADADA"/>
+                </MultiTrigger>-->
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <!--<Condition Property="Selector.IsSelectionActive" Value="True"/>-->
+                        <Condition Property="IsSelected" Value="True"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Background" TargetName="Bd" Value="#fcfaf9"/>
+                    <Setter Property="BorderBrush" TargetName="Bd" Value="#44d375"/>
+                </MultiTrigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Window.Resources>
+    <!--<Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation Storyboard.TargetProperty="Height"  From="0" To="200" Duration="0:0:5" FillBehavior="HoldEnd" AutoReverse="False"/>
+                    <DoubleAnimation Storyboard.TargetProperty="Width"  From="0" To="500" Duration="0:0:5" FillBehavior="HoldEnd" AutoReverse="False"/>
+                    <DoubleAnimation Storyboard.TargetProperty="Top"  From="50" To="200" Duration="0:0:5" FillBehavior="HoldEnd" AutoReverse="False"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>-->
+    <Border CornerRadius="5">
+        <!--背景效果-->
+        <!--<Border.Effect>
+            <DropShadowEffect BlurRadius="15" ShadowDepth="30" Direction="315" Opacity="0.3"/>
+        </Border.Effect>-->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <!--上导航栏-->
+            <!--Background="#a7d4cf"-->
+            <Border Background="#df4356" CornerRadius="5,5,0,0" MouseLeftButtonDown="MoveWindows">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <!--左半边LOGO部分-->
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" Orientation="Horizontal">
+                        <Border CornerRadius="50" Height="40" Width="40">
+                            <Border.Background>
+                                <ImageBrush ImageSource="../Assets/Images/Logo1.png" Stretch="UniformToFill"/>
+                            </Border.Background>
+                        </Border>
+                        <StackPanel VerticalAlignment="Center" Margin="10,0,0,0">
+                            <TextBlock Text="CamShar" Foreground="#fdf3f5" FontWeight="Black" FontSize="16"/>
+                            <TextBlock Text="你我一起，改变世界" Foreground="#fdf3f5" FontSize="10"/>
+                        </StackPanel>
+                    </StackPanel>
+                    <!--控制按钮-->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Top">
+                        <StackPanel Orientation="Horizontal" Margin="100,0,0,0" >
+                            <Button Foreground="#fcf9f9" Width="30" Height="30" FontFamily="../Assets/Fonts/#iconfont" Content="&#xe60e;" Background="Transparent" BorderThickness="0" Click="MinMainWindow"/>
+                            <Button Foreground="#fcf9f9" Width="30" Height="30" FontFamily="../Assets/Fonts/#iconfont" Content="&#xe692;" Background="Transparent" BorderThickness="0" Click="MaxMainWindow"/>
+                            <Button Foreground="#fcf9f9" Width="30" Height="30" FontFamily="../Assets/Fonts/#iconfont" Content="&#xeca0;" Background="Transparent" BorderThickness="0" Click="CloseMainWindow"/>
+                        </StackPanel>
+                        <!--搜索框-->
+                        <Grid x:Name="SerachPart" Margin="0,5,10,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="20"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Width="150" Background="#fbf9f8" x:Name="fileContent" BorderThickness="0.5"/>
+                            <Button Margin="5,0,0,0" Content="&#xe62f;" Grid.Column="1"
+                                    FontFamily="../Assets/Fonts/#iconfont" BorderThickness="0" 
+                                    Background="Transparent" Click="SerachFile" Foreground="#fbf9f8" FontWeight="Black"/>
+                        </Grid>
+
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <!--主体部分-->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.3*"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--侧边栏-->
+                <!--Background="#c9e4df"-->
+                <Border Background="#fbebe7" CornerRadius="0,0,0,5" BorderBrush="Black" BorderThickness="0,0,1,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="0.5*"/>
+                            <RowDefinition />
+                            <RowDefinition Height="20"/>
+                        </Grid.RowDefinitions>
+                        <!--用户部分-->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition MinHeight="140" Height="auto"/>
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Border CornerRadius="50" Height="100" Width="100" >
+                                <Border.Background>
+                                    <ImageBrush ImageSource="../Assets/Images/UserHead.png" Stretch="UniformToFill"/>
+                                </Border.Background>
+                            </Border>
+                            <TextBlock Text="" Grid.Row="1" HorizontalAlignment="Center" Height="auto" x:Name="UserName"/>
+                        </Grid>
+                        <!--侧边栏功能部分-->
+                        <StackPanel Grid.Row="1">
+                            <StackPanel.Resources>
+                                <!--侧边控制模板-->
+                                <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+                                    <Setter Property="FontSize" Value="18"/>
+                                    <Setter Property="Width" Value="222"/>
+                                    <Setter Property="Height" Value="40"/>
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="BorderThickness" Value="10,0,0,0"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </StackPanel.Resources>
+                            <ListBox Background="#fbebe7" BorderThickness="0,1,0,0" HorizontalContentAlignment="Center">
+                                <ListBoxItem IsSelected="True" Content="首页" Foreground="#363d67" HorizontalAlignment="Center" Selected="MainPageChanged" Style="{StaticResource ListBoxItemStyle}" Template="{DynamicResource ListBoxItemControlTemplate1}" />
+                                <ListBoxItem Content="我的文件" Foreground="#363d67" Selected="ChangeMyFilePage" Style="{StaticResource ListBoxItemStyle}" Template="{DynamicResource ListBoxItemControlTemplate1}"/>
+                                <ListBoxItem Content="查找资源" Foreground="#363d67" Selected="FindFileChanged" Style="{StaticResource ListBoxItemStyle}" Template="{DynamicResource ListBoxItemControlTemplate1}"/>
+                                <ListBoxItem Content="下载记录" Foreground="#363d67" Selected="DownLoadPage" Style="{StaticResource ListBoxItemStyle}" Template="{DynamicResource ListBoxItemControlTemplate1}"/>
+                            </ListBox>
+                        </StackPanel>
+                        <!--最下面的快捷设置栏-->
+                        <StackPanel Orientation="Horizontal" Grid.Row="2">
+                            <Button  Content="&#xe67d;" FontFamily="../Assets/Fonts/#iconfont" 
+                                    FontSize="18" Margin="5,0,0,0" Background="Transparent" BorderThickness="0" Click="SettingWindow"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+                <!--内容部分-->
+                <!--Background="#c9e4df"-->
+                <Border Background="#fbece9" Grid.Column="1" BorderThickness="0    " CornerRadius="0,0,5,0">
+                    <Frame x:Name="MainF" NavigationUIVisibility="Hidden" />
+                </Border>
+            </Grid>
+        </Grid>
+
+    </Border>
+</Window>

@@ -1,0 +1,335 @@
+﻿<Window x:Class="CamShar.View.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:myLib="clr-namespace:MyLoadingLib;assembly=MyLoadingLib"
+        xmlns:local="clr-namespace:CamShar.View"
+        mc:Ignorable="d"
+        Title="CamShar登录" Height="400" Width="750"
+        FontFamily="Microsoft YaHei" Background="Transparent" WindowStyle="None" AllowsTransparency="True"
+        Loaded="Loading"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        >
+    <Window.Resources>
+
+        <!--登录动画-->
+        <Storyboard x:Key="moveInLogin">
+            <DoubleAnimation Duration="0:0:0.2" To="0" 
+                                         Storyboard.TargetName="loginAnimation"
+                                         Storyboard.TargetProperty="X"
+                                         >
+            </DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Key="moveOutLogin">
+            <DoubleAnimation Duration="0:0:0.2" To="270" 
+                                         Storyboard.TargetName="loginAnimation"
+                                         Storyboard.TargetProperty="X"
+                                         >
+            </DoubleAnimation>
+        </Storyboard>
+
+        <!--注册动画(入)-->
+        <Storyboard x:Key="register">
+            <DoubleAnimation Duration="0:0:0.2" To="0" 
+                                         Storyboard.TargetName="registerAnimation"
+                                         Storyboard.TargetProperty="Angle"
+                                         >
+            </DoubleAnimation>
+        </Storyboard>
+        <!--注册动画(出)-->
+        <Storyboard x:Key="registerOut">
+            <DoubleAnimation Duration="0:0:0.2" To="-90" 
+                                         Storyboard.TargetName="registerAnimation"
+                                         Storyboard.TargetProperty="Angle"
+                                         >
+            </DoubleAnimation>
+        </Storyboard>
+
+        <SolidColorBrush x:Key="TextBox.Static.Border" Color="#FFABAdB3"/>
+        <SolidColorBrush x:Key="TextBox.MouseOver.Border" Color="#FF7EB4EA"/>
+        <SolidColorBrush x:Key="TextBox.Focus.Border" Color="#FF569DE5"/>
+        <!--用户输入框样式-->
+        <Style x:Key="UserText" TargetType="{x:Type TextBox}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" SnapsToDevicePixels="True" CornerRadius="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="../Assets/Fonts/#iconfont" Text="&#xe7ae;" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                <ScrollViewer VerticalAlignment="Center" x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.Focus.Border}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                        <Condition Property="IsSelectionActive" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--密码框样式-->
+        <Style x:Key="PasswordBoxStyle" TargetType="{x:Type PasswordBox}">
+            <Setter Property="PasswordChar" Value="●"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource TextBox.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type PasswordBox}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" SnapsToDevicePixels="True" CornerRadius="5">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontFamily="../Assets/Fonts/#iconfont" Text="&#xe75b;" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                                <ScrollViewer VerticalAlignment="Center" x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource TextBox.Focus.Border}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                        <Condition Property="IsSelectionActive" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+                </MultiTrigger>
+            </Style.Triggers>
+        </Style>
+        <!--登录按钮样式-->
+        <Style x:Key="FocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <SolidColorBrush x:Key="Button.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="Button.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
+        <Style x:Key="LoginButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="Background" Value="{StaticResource Button.Static.Background}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Button.Static.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" SnapsToDevicePixels="true" CornerRadius="5">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsDefaulted" Value="true">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.Disabled.Border}"/>
+                                <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <!--主体背景-->
+    <Border CornerRadius="5">
+        <!--背景效果-->
+        <!--<Border.Effect>
+            <DropShadowEffect BlurRadius="5" ShadowDepth="5" Direction="0" Opacity="0.4"/>
+        </Border.Effect>-->  
+        <!--主体布局-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.8*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <!--左半边图片展示-->
+            <Border CornerRadius="5,0,0,5">
+                <Border.Background>
+                    <ImageBrush ImageSource="../Assets/Images/Background.png" Stretch="UniformToFill"/>
+                </Border.Background>
+            </Border>
+            <!--右半边布局-->
+            <Border Background="#fae9e5" Grid.Column="1" MouseLeftButtonDown="DropWin" CornerRadius="0,5,5,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="auto" MaxHeight="280"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <!--第一行：关闭控制-->
+                    <Button Height="30" Width="30" BorderThickness="0" Background="Transparent" FontFamily="../Assets/Fonts/#iconfont" 
+                            Content="&#xeca0;" HorizontalAlignment="Right" VerticalAlignment="Top" Click="WinClose"/>
+                    <!--登录主部分-->
+                    <StackPanel Grid.Row="1" Margin="5">
+                        <Border CornerRadius="50" Height="70" Width="70" Margin="10">
+                            <Border.Background>
+                                <ImageBrush ImageSource="../Assets/Images/UserHead.png" Stretch="UniformToFill"/>
+                            </Border.Background>
+                        </Border>
+                        <TextBox Width="200" Height="30" Margin="10" Style="{DynamicResource UserText}" FontSize="14" Background="#fae9e5" x:Name="userName"/>
+                        <PasswordBox Width="200" Height="30"  Margin="10" Style="{DynamicResource PasswordBoxStyle}" Background="#fae9e5" x:Name="password"/>
+                        <Button x:Name="loginBtn" Width="200" Height="30" Content="登    录" Margin="10" Style="{DynamicResource LoginButtonStyle}" Background="#fae9e5" Click="LoginCheck"/>
+                        <TextBlock Text="" Foreground="Red" Height="auto" FontSize="12" Margin="5" HorizontalAlignment="Center" x:Name="errorFeedback"/>
+                    </StackPanel>
+                    <!--附属登录-->
+                    <StackPanel Grid.Row="2">
+                        <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
+                            <TextBlock>
+                            <Path Data="M0 10 80 10" Stroke="Black"/>
+                            </TextBlock>
+                            <TextBlock Text="其他登录方式" VerticalAlignment="Center" Margin="5,0,5,0"/>
+                            <TextBlock>
+                            <Path Data="M0 10 80 10" Stroke="Black"/>
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+                            <TextBlock FontFamily="../Assets/Fonts/#iconfont" Text="&#xe609;" FontSize="24"/>
+                            <TextBlock FontFamily="../Assets/Fonts/#iconfont" Text="&#xe8bb;" FontSize="24" Margin="20,0,20,0"/>
+                            <TextBlock FontFamily="../Assets/Fonts/#iconfont" Text="&#xe606;" FontSize="24"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="还没注册？" VerticalAlignment="Center" Margin="5,0,5,0" />
+                            <Button Content="点击注册" BorderThickness="0" Background="Transparent" 
+                                    Foreground="Blue" VerticalAlignment="Center" Click="Register"/>
+                        </StackPanel>
+                        
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <!--登录动画板-->
+            <Border Background="#fae9e5" Grid.Column="1" CornerRadius="0,5,5,0">
+                <Border.RenderTransform>
+                    <TranslateTransform  X="280" x:Name="loginAnimation"/>
+                </Border.RenderTransform>
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <myLib:FiveColumnLoading Foreground="#df3f52"/>
+                    <TextBlock Text="登录中"/>
+                </StackPanel>
+            </Border>
+            <!--注册动画板-->
+            <Border Background="#a7d4cf"  CornerRadius="5,0,0,5">
+                <Border.RenderTransform>
+                    <RotateTransform Angle="-90"  x:Name="registerAnimation"/>
+                </Border.RenderTransform>
+                <Border CornerRadius="5,0,0,5">
+                    <Grid>
+                        <Grid.Background>
+                            <ImageBrush ImageSource="../Assets/Images/SignBack.png" Stretch="UniformToFill">
+                            </ImageBrush>
+                        </Grid.Background>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="&#xe6ff;" FontFamily="../Assets/Fonts/#iconfont" Width="30"
+                            HorizontalAlignment="Left" VerticalAlignment="Top" Height="30"
+                            BorderThickness="0" Background="Transparent" Margin="5" Click="OutRegister"/>
+                        <Grid Margin="30,40,30,40">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="280"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="注册" FontSize="24" FontWeight="Black" />
+                            
+                            <Border Background="AliceBlue" CornerRadius="5" Grid.Row="1" Margin="0,10,0,0">
+                                <Grid>
+                                    <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                                        <TextBlock Text="请输入您的用户名：" Margin="10,0,0,0"/>
+                                        <TextBox  Margin="10" Style="{DynamicResource UserText}" FontSize="14" Background="#c9e4df" x:Name="r_UserName"/>
+                                        <TextBlock Text="请输入您的密码：" Margin="10,0,0,0"/>
+                                        <PasswordBox   Margin="10" Style="{DynamicResource PasswordBoxStyle}" Background="#c9e4df" x:Name="r_Password"/>
+                                        <TextBlock Text="再次输入密码：" Margin="10,0,0,0"/>
+                                        <PasswordBox   Margin="10" Style="{DynamicResource PasswordBoxStyle}" Background="#c9e4df" x:Name="r_TwicePassword"/>
+                                        <CheckBox Content="已阅读并同意《用户协议》" FontSize="10" HorizontalAlignment="Center" VerticalContentAlignment="Center" x:Name="r_XieYi"/>
+                                        <Button   Content="注   册" Margin="10" Style="{DynamicResource LoginButtonStyle}" 
+                                          Background="#c9e4df" Click="RegisterCheck"/>
+                                        <TextBlock Text="" Foreground="Red" HorizontalAlignment="Center" FontSize="10" x:Name="r_ErrorCallBack"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+
+                            <Border x:Name="registerLoading" Background="AliceBlue" Grid.Row="1" CornerRadius="5" Margin="0,10,0,0" Opacity="0.8" Visibility="Hidden">
+                                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                    <myLib:FiveColumnLoading Foreground="Blue"/>
+                                    <TextBlock Text="注册中" FontWeight="Black"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </Border>
+                
+            </Border>
+        </Grid>
+    </Border>
+</Window>
